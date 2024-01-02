@@ -1,28 +1,32 @@
-name: release
+name: Release and Zip Code
+
 on:
   release:
     types: [published]
-  workflow_dispatch:
+
 jobs:
-  build_release:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: checkout
+      - name: Checkout code
         uses: actions/checkout@v2
-      - name: Get release
-        id: get_release
-        uses: bruceadams/get-release@v1.3.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: zip
+
+      - name: Extract tag name
+        id: extract_tag
+        run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+
+      - name: Zip files
         run: |
-          zip -r foo.zip windows
-      - name: upload extension file
+          tag_name=$({{ steps.extract_tag.outputs.tag }})
+          zip -r "${tag_name}.zip" .
+
+      - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./foo.zip
-          asset_name: foo.zip
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./${{ steps.extract_tag.outputs.tag }}.zip
+          asset_name: ${{ steps.extract_tag.outputs.tag }}.zip
           asset_content_type: application/zip
