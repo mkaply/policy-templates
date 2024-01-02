@@ -18,7 +18,7 @@ jobs:
 
       - name: Zip files
         run: |
-          tag_name=$({{ steps.extract_tag.outputs.tag }})
+          tag_name=${{ steps.extract_tag.outputs.tag }}
           zip -r "${tag_name}.zip" .
 
       - name: Upload Release Asset
