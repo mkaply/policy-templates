@@ -19,7 +19,8 @@ jobs:
       - name: Update XML attribute
         uses: Mudlet/xmlstarlet-action@master
         with:
-          args: ed --inplace -u '/policyDefinitions/@revision' -v "TESTING" "./windows/firefox.admx"
+          args: ed -P -L --update '/policyDefinitions/@revision' -v "TESTING" "windows/firefox.admx"
+          
 
       - name: Get filename
         id: get_filename
