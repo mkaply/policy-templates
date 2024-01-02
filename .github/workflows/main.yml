@@ -17,9 +17,9 @@ jobs:
         run: echo "::set-output name=version::TEST"
 
       - name: Update XML attribute
-        run: |
-          version_number=${{ steps.get_version.outputs.version }}
-          xmlstarlet ed --inplace -u '//policyDefinitions[@revision]' -v "$version_number" windows/firefox.admx
+        uses: Mudlet/xmlstarlet-action@master
+        with:
+          args: ed --inplace -u '//policyDefinitions[@revision]' -v "TESING" windows/firefox.admx
 
       - name: Get filename
         id: get_filename
